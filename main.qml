@@ -35,8 +35,21 @@ ApplicationWindow {
 
         Page {
             Label {
+                id: labelPage2
                 text: qsTr("Second page")
                 anchors.centerIn: parent
+                FirebaseMessaging{
+                    topicFilter: ["page2"]
+                    onMessageReceived: {
+                        if(message.data.value)
+                        {
+                            labelPage2.text = message.data.value
+                        }
+                    }
+                    Component.onCompleted: {
+                        subscribe("page2")
+                    }
+                }
             }
         }
     }

@@ -20,22 +20,14 @@ class FirebaseMessaging : public QObject, public firebase::messaging::Listener
 
 public:
     explicit FirebaseMessaging(QObject *parent = 0);
-
     static FirebaseMessaging *instance();
 
     virtual void OnTokenReceived(const char* token);
     virtual void OnMessage(const ::firebase::messaging::Message& message);
-    QString fcmToken();
-    Q_INVOKABLE void subscribe(QString topic)
-    {
-        qDebug() << "Subscribing to " << topic;
-        firebase::messaging::Subscribe( topic.toStdString().c_str() );
-    }
 
-    QStringList topicFilter() const
-    {
-        return m_topicFilter;
-    }
+    QString fcmToken();    
+    Q_INVOKABLE void subscribe(QString topic);
+    QStringList topicFilter() const;
 
 signals:
     void fcmTokenChanged(QString fcmToken);
@@ -44,37 +36,8 @@ signals:
 
 public slots:
 
-void setTopicFilter(QStringList topicFilter)
-{
-    qDebug() << "Setting topic filter" << topicFilter;
-    if (m_topicFilter == topicFilter)
-        return;
-
-    disconnect(instance(),0,this,0);
-    m_topicFilter = topicFilter;
-    QObject::connect(instance(),SIGNAL(messageReceived(QVariantMap)),this,SLOT(messageReceivedFilter(QVariantMap)));
-    emit topicFilterChanged(topicFilter);
-}
-
-void messageReceivedFilter(QVariantMap message){
-    qDebug() << "Receive to filter" << message.value("from");
-    QString topicFrom = message.value("from").toString();
-    if(topicFrom.contains("/topics/"))
-    {
-        topicFrom = topicFrom.split("/").last();
-
-    }else{
-        return;
-    }
-
-    qDebug() << "Filtering for topic" << topicFrom;
-    if(!m_topicFilter.contains(topicFrom))
-    {
-        return;
-    }
-
-    emit messageReceived(message);
-}
+void setTopicFilter(QStringList topicFilter);
+void messageReceivedFilter(QVariantMap message);
 
 protected:
     static QPointer<FirebaseMessaging> m_instance;
