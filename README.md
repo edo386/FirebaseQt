@@ -95,9 +95,9 @@ apply plugin: 'com.google.gms.google-services'
 Set your package name in the same file:
 
 ```
-defaultConfig {
-    applicationId "org.qtproject.firebasedemo"
-}
+  defaultConfig {
+      applicationId "org.qtproject.firebasedemo"
+  }
 ```
 
 At this point Qt should build the application but gradle can complain about a version so set it to `gradle-2.14.1-all.zip` at the `gradle-wrapper.properties` file.
