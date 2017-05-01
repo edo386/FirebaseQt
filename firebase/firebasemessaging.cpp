@@ -95,3 +95,51 @@ QString FirebaseMessaging::fcmToken()
 {
     return m_fcmToken;
 }
+
+void FirebaseMessaging::subscribe(QString topic)
+{
+    qDebug() << "Subscribing to " << topic;
+    firebase::messaging::Subscribe( topic.toStdString().c_str() );
+}
+
+QStringList FirebaseMessaging::topicFilter() const
+{
+    return m_topicFilter;
+}
+
+void FirebaseMessaging::setTopicFilter(QStringList topicFilter)
+{
+    qDebug() << "Setting topic filter" << topicFilter;
+    if (m_topicFilter == topicFilter)
+        return;
+    if(!topicFilter.isEmpty())
+    {
+        disconnect(instance(),0,this,0);
+        QObject::connect(instance(),SIGNAL(messageReceived(QVariantMap)),this,SLOT(messageReceivedFilter(QVariantMap)));
+    }else{
+        QObject::connect(instance(),SIGNAL(messageReceived(QVariantMap)),this,SIGNAL(messageReceived(QVariantMap)));
+    }
+    m_topicFilter = topicFilter;
+
+    emit topicFilterChanged(topicFilter);
+}
+
+void FirebaseMessaging::messageReceivedFilter(QVariantMap message){
+    qDebug() << "Receive to filter" << message.value("from");
+    QString topicFrom = message.value("from").toString();
+    if(topicFrom.contains("/topics/"))
+    {
+        topicFrom = topicFrom.split("/").last();
+
+    }else{
+        return;
+    }
+
+    qDebug() << "Filtering for topic" << topicFrom;
+    if(!m_topicFilter.contains(topicFrom))
+    {
+        return;
+    }
+
+    emit messageReceived(message);
+}
