@@ -6,6 +6,10 @@ SOURCES += main.cpp \
     firebase/firebasemessaging.cpp \
     firebase/firebaseapp.cpp
 
+HEADERS += \
+    firebase/firebasemessaging.h \
+    firebase/firebaseapp.h
+
 RESOURCES += qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
@@ -40,7 +44,8 @@ android{
         android/res/values/libs.xml \
         android/build.gradle \
         android/gradle/wrapper/gradle-wrapper.properties \
-        android/gradlew.bat
+        android/gradlew.bat \
+        android/src/org/qtproject/firebasedemo/MainActivity.java
 
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
@@ -50,15 +55,22 @@ android{
     DEPENDPATH += $$PWD/firebase_cpp_sdk/libs/android/armeabi-v7a/gnustl/
 }
 
+ios{
+    QMAKE_INFO_PLIST = $$PWD/iOS/Info.plist
+    INCLUDEPATH  += $$PWD/firebase_cpp_sdk/include
+
+    QMAKE_LFLAGS += -L$$PWD/firebase_cpp_sdk/libs/frameworks/ios/
+
+    QMAKE_LFLAGS +=  -framework "FirebaseCore" \
+                     -framework "FirebaseDatabase" \
+                     -framework "FirebaseMessaging"
+
+}
+
 contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
     ANDROID_EXTRA_LIBS = \
         $$PWD/android/openssl/libcrypto.so \
         $$PWD/android/openssl/libssl.so
 }
 
-DISTFILES += \
-    android/src/org/qtproject/firebasedemo/MainActivity.java
 
-HEADERS += \
-    firebase/firebasemessaging.h \
-    firebase/firebaseapp.h

@@ -3,9 +3,11 @@
 
 #include <QGuiApplication>
 
+#ifdef Q_OS_ANDROID
 #include <QtAndroid>
 #include <QAndroidJniObject>
 #include <QAndroidJniEnvironment>
+#endif
 
 #include "firebase/firebasemessaging.h"
 
@@ -15,7 +17,9 @@
 #include "firebase/messaging.h"
 #include "firebase/auth.h"
 
+/**! Firebase Plugin */
 #include "firebase/firebaseapp.h"
+#include "firebase/firebasemessaging.h"
 
 int main(int argc, char *argv[])
 {
@@ -35,7 +39,7 @@ int main(int argc, char *argv[])
         qWarning() << "Firebase App not created, activity is invalid";
     }
 #else
-    Firebase::setFirebaseApp( firebase::App::Create(firebase::AppOptions()) );
+    FirebaseApp *firebaseApp = new FirebaseApp( &app, firebase::App::Create(firebase::AppOptions()) );
 #endif
     QQmlApplicationEngine engine;
 

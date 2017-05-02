@@ -84,3 +84,4 @@ gradlew.bat
 # ----------------
 firebase_cpp_sdk
 google-services.json
+GoogleService-Info.plist
