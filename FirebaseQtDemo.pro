@@ -38,14 +38,15 @@ android{
     QT += androidextras
 
     DISTFILES += \
-        android/AndroidManifest.xml \
+        android/src/org/qtproject/firebasedemo/MainActivity.java \
         android/gradle/wrapper/gradle-wrapper.jar \
         android/gradlew \
         android/res/values/libs.xml \
-        android/build.gradle \
         android/gradle/wrapper/gradle-wrapper.properties \
         android/gradlew.bat \
         android/src/org/qtproject/firebasedemo/MainActivity.java
+        android/gradle.properties \
+        android/local.properties
 
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
