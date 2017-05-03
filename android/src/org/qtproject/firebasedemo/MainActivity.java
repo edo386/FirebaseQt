@@ -1,6 +1,6 @@
 package org.qtproject.firebasedemo;
 
-
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends org.qtproject.qt5.android.bindings.QtActivity
 {
@@ -14,6 +14,7 @@ public class MainActivity extends org.qtproject.qt5.android.bindings.QtActivity
     public MainActivity()
     {
         m_instance = this;
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
 }

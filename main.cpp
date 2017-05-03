@@ -20,6 +20,7 @@
 /**! Firebase Plugin */
 #include "firebase/firebaseapp.h"
 #include "firebase/firebasemessaging.h"
+#include "firebase/firebasedatabase.h"
 
 int main(int argc, char *argv[])
 {
@@ -28,6 +29,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<FirebaseApp>("Firebase",1,0,"FirebaseApp");
     qmlRegisterType<FirebaseMessaging>("Firebase",1,0,"FirebaseMessaging");
+    qmlRegisterType<FirebaseDatabase>("Firebase",1,0,"FirebaseDatabase");
 
 #ifdef Q_OS_ANDROID
     QAndroidJniEnvironment environment;

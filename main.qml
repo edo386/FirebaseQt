@@ -36,18 +36,31 @@ ApplicationWindow {
         Page {
             Label {
                 id: labelPage2
-                text: qsTr("Second page")
+                //text: testObject.text// qsTr("Second page")
                 anchors.centerIn: parent
                 FirebaseMessaging{
-                    topicFilter: ["page2"]
+                    //topicFilter: ["page2"]
                     onMessageReceived: {
                         if(message.data.value)
                         {
                             labelPage2.text = message.data.value
+                            //testObject.text = message.data.value
                         }
                     }
                     Component.onCompleted: {
                         subscribe("page2")
+                    }
+                }
+                FirebaseDatabase{
+                    basePath: "testObject"
+                    baseComponent: Component{
+                        QtObject{
+                            property string path
+                        }
+                    }
+                    onValueChanged: {
+                        console.log("Value" + JSON.stringify(value,null,2))
+                        labelPage2.text = value
                     }
                 }
             }

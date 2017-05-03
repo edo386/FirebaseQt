@@ -4,11 +4,13 @@ CONFIG += c++11
 
 SOURCES += main.cpp \
     firebase/firebasemessaging.cpp \
-    firebase/firebaseapp.cpp
+    firebase/firebaseapp.cpp \
+    firebase/firebasedatabase.cpp
 
 HEADERS += \
     firebase/firebasemessaging.h \
-    firebase/firebaseapp.h
+    firebase/firebaseapp.h \
+    firebase/firebasedatabase.h
 
 RESOURCES += qml.qrc
 
@@ -44,7 +46,7 @@ android{
         android/res/values/libs.xml \
         android/gradle/wrapper/gradle-wrapper.properties \
         android/gradlew.bat \
-        android/src/org/qtproject/firebasedemo/MainActivity.java
+        android/src/org/qtproject/firebasedemo/MainActivity.java \
         android/gradle.properties \
         android/local.properties
 
