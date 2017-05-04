@@ -6,6 +6,7 @@ buildscript {
     dependencies {
     classpath 'com.android.tools.build:gradle:2.2.3'
     classpath 'com.google.gms:google-services:3.0.0'
+    classpath 'com.google.firebase:firebase-plugins:1.0.5'
     }
 }
 
@@ -16,6 +17,8 @@ allprojects {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.firebase-crash'
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

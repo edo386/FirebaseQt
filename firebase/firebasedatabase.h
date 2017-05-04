@@ -16,7 +16,8 @@ class FirebaseDatabase : public QObject, public firebase::database::ChildListene
     Q_PROPERTY(QQmlComponent * baseComponent READ baseComponent WRITE setBaseComponent NOTIFY baseComponentChanged)
     Q_PROPERTY(QUrl basePath READ basePath WRITE setBasePath NOTIFY basePathChanged)
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
-
+    Q_PROPERTY(QObject *valueObj READ valueObj WRITE setValueObj NOTIFY valueObjChanged)
+    Q_PROPERTY(bool write READ write WRITE setWrite NOTIFY writeChanged)
 
 public:
     explicit FirebaseDatabase(QObject *parent = 0);
@@ -30,70 +31,52 @@ public:
 
     void OnCancelled(const firebase::database::Error& error_code, const char* error_message) override;
 
-    QUrl basePath() const
-    {
-        return m_basePath;
-    }
-
-    QQmlComponent * baseComponent() const
-    {
-        return m_baseComponent;
-    }
+    QUrl basePath() const;
+    QQmlComponent *baseComponent() const;
+    QVariant value() const;
 
     static QVariant VariantToQVariant(firebase::Variant *val);
+    static firebase::Variant QVariantToVariant(QVariant val);
 
 
-    QVariant value() const
+    QObject *valueObj();
+
+    bool write() const
     {
-        return m_value;
+        return m_write;
     }
 
 signals:
 
     void basePathChanged(QUrl basePath);
-
     void baseComponentChanged(QQmlComponent * baseComponent);
-
     void valueChanged(QVariant value);
+    void valueObjChanged(QObject *valueObj);
+
+    void writeChanged(bool write);
 
 public slots:
 
-void setBasePath(QUrl basePath)
+void setBasePath(QUrl basePath);
+void setBaseComponent(QQmlComponent * baseComponent);
+void setValue(QVariant value, bool write = true);
+
+void setValueObj(QObject *valueObj)
 {
-    if (m_basePath == basePath)
+    if (m_valueObj == valueObj)
         return;
 
-    m_basePath = basePath;
-    qDebug() << "Base Path" << basePath.path().remove(0,1);
-    if( m_database )
-    {
-        m_database_ref = new firebase::database::DatabaseReference( m_database->GetReference(basePath.path().remove(0,1).toStdString().c_str()) );
-        m_database_ref->AddChildListener(this);
-        m_database_ref->AddValueListener(this);
-        m_database_ref->GetValue();
-        m_database_ref->SetKeepSynchronized(true);
-
-        qDebug() <<"Database Reference URL"<< m_database_ref->url().c_str();
-    }
-    emit basePathChanged(basePath);
+    m_valueObj = valueObj;
+    emit valueObjChanged(valueObj);
 }
 
-void setBaseComponent(QQmlComponent * baseComponent)
+void setWrite(bool write)
 {
-    if (m_baseComponent == baseComponent)
+    if (m_write == write)
         return;
 
-    m_baseComponent = baseComponent;
-    emit baseComponentChanged(baseComponent);
-}
-
-void setValue(QVariant value)
-{
-    if (m_value == value)
-        return;
-
-    m_value = value;
-    emit valueChanged(value);
+    m_write = write;
+    emit writeChanged(write);
 }
 
 private:
@@ -102,6 +85,8 @@ private:
     QUrl m_basePath;
     QQmlComponent * m_baseComponent;
     QVariant m_value;
+    QObject *m_valueObj = NULL;
+    bool m_write = true;
 };
 
 #endif // FIREBASEDATABASE_H

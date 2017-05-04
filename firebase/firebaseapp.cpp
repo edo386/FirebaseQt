@@ -9,7 +9,10 @@ FirebaseApp::FirebaseApp(QObject *parent) : QObject(parent)
 
 FirebaseApp::FirebaseApp(QObject *parent, firebase::App *app)
 {
+//    qDebug() << "Creating FirebaseApp";
+//    qDebug() << "FirebaseApp Instance" << instance() << app;
     instance()->setApp(app);
+//    qDebug() << "Firebase Base App Instance" << instance()->getApp();
     instance()->readyChanged(1);
 }
 

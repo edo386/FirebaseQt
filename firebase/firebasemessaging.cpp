@@ -5,15 +5,20 @@ QPointer<FirebaseMessaging> FirebaseMessaging::m_instance;
 
 FirebaseMessaging::FirebaseMessaging(QObject *parent) : QObject(parent)
 {
-    qDebug() << "FirebaseMessaging" << FirebaseApp::instance()->getApp()->name() << m_topicFilter;
-    if(!m_instance)
+    qDebug() << "FirebaseMessaging" ;
+    if(m_instance.isNull())
     {
+        while (FirebaseApp::instance()->getApp() == NULL) {
+            qt_noop();
+        }
         firebase::messaging::Initialize(*FirebaseApp::instance()->getApp(),this);
         m_instance = this;
     }else{
         QObject::connect(instance(),SIGNAL(fcmTokenChanged(QString)),this,SIGNAL(fcmTokenChanged(QString)));
         QObject::connect(instance(),SIGNAL(messageReceived(QVariantMap)),this,SIGNAL(messageReceived(QVariantMap)));
     }
+    qDebug() << "FirebaseMessaging" << FirebaseApp::instance()->getApp()->name() << m_topicFilter;
+
 }
 
 FirebaseMessaging *FirebaseMessaging::instance()

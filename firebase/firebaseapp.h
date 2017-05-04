@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include <QDebug>
 #include "firebase/app.h"
 
 class FirebaseApp : public QObject
@@ -24,7 +25,12 @@ public:
     }
 
     firebase::App *getApp(){
+//        qDebug() << "FirebaseApp: Returning App" << m_app;
         return m_app;
+    }
+
+    bool appReady(){
+        return m_app != NULL;
     }
 
 signals:
@@ -35,19 +41,18 @@ public slots:
 
 protected:
     static QPointer<FirebaseApp> m_instance;
-
-    firebase::App *m_app;
+    firebase::App *m_app = NULL;
 
     void setApp(firebase::App *app){
+//        qDebug() << "Setting APP " << app << m_app;
         if(m_app == NULL)
         {
             m_app = app;
+//            qDebug() << "App set " << m_app;
         }
     }
 
-    bool appReady(){
-        return m_app != NULL;
-    }
+
 };
 
 #endif // FIREBASEAPP_H

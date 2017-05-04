@@ -11,24 +11,25 @@ Page1Form {
         fcmTokenText.copy();
         console.log(baseMessaging.fcmToken);
     }
-    fcmTokenText.text: "FCM Token\n " + baseMessaging.fcmToken
+    //fcmTokenText.text: "FCM Token\n " + baseMessaging.fcmToken
 
-    FirebaseMessaging{
-        topicFilter: ["page1"]
-        onFcmTokenChanged: {
-            console.log("Hey Second one! " + fcmToken)
-        }
+//    FirebaseMessaging{
+//        topicFilter: ["page1"]
+//        onFcmTokenChanged: {
+//            console.log("Hey Second one! " + fcmToken)
+//            fcmTokenText.text = fcmToken;
+//        }
 
-        onMessageReceived: {
-            console.log(JSON.stringify(message,null,2))
-            if(message.data.value)
-            {
-                messageTextArea.text = message.data.value;
-            }
-        }
-        Component.objectName: {
-            subscribe("page1");
-        }
-    }
+//        onMessageReceived: {
+//            console.log(JSON.stringify(message,null,2))
+//            if(message.data.value)
+//            {
+//                messageTextArea.text = message.data.value;
+//            }
+//        }
+//        Component.onCompleted: {
+//            subscribe("page1");
+//        }
+//    }
 
 }
