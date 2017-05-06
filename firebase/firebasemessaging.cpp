@@ -2,6 +2,8 @@
 
 
 QPointer<FirebaseMessaging> FirebaseMessaging::m_instance;
+QStringList FirebaseMessaging::m_topics;
+QSettings * FirebaseMessaging::m_localSettings;
 
 FirebaseMessaging::FirebaseMessaging(QObject *parent) : QObject(parent)
 {
@@ -13,6 +15,9 @@ FirebaseMessaging::FirebaseMessaging(QObject *parent) : QObject(parent)
         }
         firebase::messaging::Initialize(*FirebaseApp::instance()->getApp(),this);
         m_instance = this;
+        m_localSettings = new QSettings("MERS","FirebaseQtDemo",m_instance);
+        //m_localSettings->clear();
+        qDebug() << topics();
     }else{
         QObject::connect(instance(),SIGNAL(fcmTokenChanged(QString)),this,SIGNAL(fcmTokenChanged(QString)));
         QObject::connect(instance(),SIGNAL(messageReceived(QVariantMap)),this,SIGNAL(messageReceived(QVariantMap)));
@@ -103,13 +108,88 @@ QString FirebaseMessaging::fcmToken()
 
 void FirebaseMessaging::subscribe(QString topic)
 {
-    qDebug() << "Subscribing to " << topic;
-    firebase::messaging::Subscribe( topic.toStdString().c_str() );
+    qDebug() << "Subscribing to" << topic;
+    if(!instance()->topics().contains(topic))
+    {
+        if(this == m_instance)
+        {
+            firebase::messaging::Subscribe( topic.toStdString().c_str() );
+            m_localSettings->beginWriteArray("topics");
+            m_localSettings->setArrayIndex(m_topics.size());
+            m_localSettings->setValue("topic",topic);
+            m_localSettings->endArray();
+            //qDebug() << m_localSettings->allKeys();
+        }else
+        {
+            m_instance->subscribe(topic);
+        }
+        this->topicsChanged(topics());
+    }
+    qDebug() << "Topics" << topics();
+}
+
+void FirebaseMessaging::unSubscribe(QString topic)
+{
+    qDebug() << "Unsubscribing from" << topic;
+
+    if(instance()->topics().contains(topic))
+    {
+        if(m_instance == this)
+        {
+            m_topics.removeAll(topic);
+            firebase::messaging::Unsubscribe(topic.toStdString().c_str());
+
+            m_localSettings->beginGroup("topics");
+            m_localSettings->remove("");
+            m_localSettings->endGroup();
+
+            //qDebug() << m_localSettings->allKeys();
+
+            m_localSettings->beginWriteArray("topics");
+            int ix = 0;
+            foreach(QString top , m_topics)
+            {
+                m_localSettings->setArrayIndex(ix);
+                m_localSettings->setValue("topic",top);
+                ix++;
+            }
+            m_localSettings->endArray();
+        }
+        this->topicsChanged(topics());
+    }else
+    {
+        qDebug() << "Probably not registered to" << topic;
+    }
+    qDebug() << topics();
 }
 
 QStringList FirebaseMessaging::topicFilter() const
 {
     return m_topicFilter;
+}
+
+QStringList FirebaseMessaging::topics()
+{
+    if(this == m_instance)
+    {
+        int topicsSize = m_localSettings->beginReadArray("topics");
+        QString tempTopic;
+
+        for(int i = 0; i < topicsSize; i++)
+        {
+            m_localSettings->setArrayIndex(i);
+            tempTopic = m_localSettings->value("topic").toString();
+            if(!m_topics.contains(tempTopic))
+            {
+                m_topics.append(tempTopic);
+            }
+        }
+        m_localSettings->endArray();
+        return m_topics;
+    }else
+    {
+        return instance()->topics();
+    }
 }
 
 void FirebaseMessaging::setTopicFilter(QStringList topicFilter)

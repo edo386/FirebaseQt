@@ -18,105 +18,22 @@ ApplicationWindow {
         }
     }
 
-    //    FirebaseMessaging{
-    //        id: baseMessaging
-    //        onFcmTokenChanged: {
-    //            console.log("FCM Token " + fcmToken);
-    //        }
-    //    }
-
     SwipeView {
         id: swipeView
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
-
-        Page1 {
-        }
-
-        Page {
-//            FirebaseMessaging{
-//                //topicFilter: ["page2"]
-//                onMessageReceived: {
-//                    if(message.data.value)
-//                    {
-//                        labelPage2.text = message.data.value
-//                    }
-//                }
-//                Component.onCompleted: {
-//                    subscribe("page2")
-//                }
-//            }
-            FirebaseDatabase{
-                id: testObjectRef
-                basePath: "testObject"
-                baseComponent: Component{
-                    QtObject{
-                        property string kind: "MyKind"
-                        property var path
-                        property var value
-                        Component.onCompleted: {
-                            console.log(path,value)
-                        }
-                    }
-                }
-                onValueChanged: {
-                    console.log("Value" + JSON.stringify(value,null,2))
-                    //labelPage2.text = value
-                }
-                onValueObjChanged: {
-                    console.log("ValueObj" + JSON.stringify(valueObj));
-                    //objectPathText.text = testObjectRef.valueObj.path ? testObjectRef.valueObj.path : ""
-                }
-            }
-
-//            FirebaseDatabase{
-//                id: obj2Ref
-//                basePath: "obj2"
-//                write: false
-//                onValueChanged: {
-//                    console.log("Value "+ basePath + JSON.stringify(value,null,2))
-//                }
-//            }
-
-            Column{
-                anchors.horizontalCenter: parent.horizontalCenter
-                TextInput{
-                    id: inText
-                    text: "ChangeMe!"
-                    height: 60
-                    onTextChanged: {testObjectRef.value = text}
-//                    onAccepted: {
-//                        testObjectRef.value = inText.text
-//                    }
-                }
-
-                Button{
-                    onClicked: {
-//                        obj2Ref.value.single = inText.text
-                    }
-                }
-
-                Label {
-                    id: labelPage2
-                    text: testObjectRef.valueObj.path
-                }
-                Text{
-                    id: objectPathText
-//                    text: obj2Ref.value.single + obj2Ref.value.array[0]
-                }
-            }
-
-        }
+        Messaging{}
+        Database{}
     }
 
     footer: TabBar {
         id: tabBar
         currentIndex: swipeView.currentIndex
         TabButton {
-            text: qsTr("First")
+            text: qsTr("FCM")
         }
         TabButton {
-            text: qsTr("Second")
+            text: qsTr("Database")
         }
     }
 }

@@ -62,11 +62,25 @@ ios{
     QMAKE_INFO_PLIST = $$PWD/iOS/Info.plist
     INCLUDEPATH  += $$PWD/firebase_cpp_sdk/include
 
-    QMAKE_LFLAGS += -L$$PWD/firebase_cpp_sdk/libs/frameworks/ios/
+    QMAKE_LFLAGS += -F$$PWD/firebase_cpp_sdk/libs/frameworks/ios/
 
-    QMAKE_LFLAGS +=  -framework "FirebaseCore" \
+    LIBS +=  -framework "FirebaseCore" \
                      -framework "FirebaseDatabase" \
                      -framework "FirebaseMessaging"
+
+}
+
+osx{
+#    QMAKE_INFO_PLIST = $$PWD/iOS/Info.plist
+    INCLUDEPATH  += $$PWD/firebase_cpp_sdk/include
+
+    QMAKE_LFLAGS += -L$$PWD/firebase_cpp_sdk/libs/darwin/
+    QMAKE_LFLAGS += -F$$PWD/firebase_cpp_sdk/frameworks/darwin/
+
+    LIBS += -lmessaging -ldatabase -lauth -lapp
+#                     -framework FirebaseCore \
+#                     -framework "FirebaseDatabase" \
+#                     -framework "FirebaseMessaging"
 
 }
 
