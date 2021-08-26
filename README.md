@@ -32,7 +32,7 @@ FirebaseMessaging{
     onFcmTokenChanged: {
         console.log("FCM Token " + fcmToken);
     }
-    Component.objectName: {
+    Component.onCompleted: {
       subscribe("your_topic");
     }
 }
